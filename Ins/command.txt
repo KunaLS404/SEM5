@@ -1,0 +1,51 @@
+R1
+
+enable
+config t
+license boot module c1900 technology-package securityk9
+yes
+end
+copy running-config startup-config
+
+reload
+
+config t
+access-list 110 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+crypto isakmp policy 10
+ encryption aes 256
+ authentication pre-share
+ group 5
+ exit
+crypto isakmp key key123 address 20.0.0.2
+crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+crypto map VPN-MAP 10 ipsec-isakmp
+ description VPN connection to R3
+ set peer 20.0.0.2
+ set transform-set VPN-SET
+ match address 110
+ exit
+interface S0/1/0
+ crypto map VPN-MAP
+
+
+
+R3
+
+enable
+config t
+access-list 110 permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
+crypto isakmp policy 10
+ encryption aes 256
+ authentication pre-share
+ group 5
+ exit
+crypto isakmp key key123 address 10.0.0.2
+crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+ crypto map VPN-MAP 10 ipsec-isakmp
+ description VPN connection to R1
+ set peer 10.0.0.2
+ set transform-set VPN-SET
+ match address 110
+ exit
+interface S0/1/0
+ crypto map VPN-MAP
