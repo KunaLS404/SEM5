@@ -1,0 +1,17 @@
+-----------------------------MY_SQL----------------------------------
+
+1) sudo apt update
+2) sudo apt install mysql-server
+3) sudo mysql_secure_installation : All no
+4) sudo apt install phpmyadmin:
+	select apache2: ok
+	configure a database for phpMyAdmin with dbconfig-common: Yes
+5) Configure Apache for phpMyAdmin:
+	
+	sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+
+6) sudo a2enconf phpmyadmin
+7) sudo systemctl restart apache2
+8) Access phpMyAdmin:
+
+	http://localhost/phpmyadmin

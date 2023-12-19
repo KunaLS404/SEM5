@@ -1,0 +1,84 @@
+------------------------LDAP-------------------------------
+
+1) sudo apt update
+2) sudo apt install slapd ldap-utils
+3) sudo dpkg-reconfigure slapd:
+	Omit OpenLDAP server configuration? No
+	DNS domain name: Your domain (e.g., example.com)
+	Organization name: Your organization name
+	Administrator password: The LDAP administrator password you set during installation
+	Remove the database when slapd is purged: No
+	Move old database: Yes
+5) Now generate a hashed value for your password:
+
+	slappasswd -h {SSHA}	
+
+4) Add LDAP User Accounts:  
+	Create an LDIF file (e.g., users.ldif) with the following content:
+--------------------------------------------------------------------------
+dn: ou=People,dc=example,dc=com
+objectClass: organizationalUnit
+ou: People
+
+dn: uid=johndoe,ou=People,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: John Doe
+sn: Doe
+uid: johndoe
+userPassword: {SSHA}hashed_password_here //ENTER THE GENERATED HASHED VALUE OF YOUR PASSWORD
+--------------------------------------------------------------------------
+5) Add the entries to the LDAP server:
+
+ldapadd -x -D cn=admin,dc=example,dc=com -W -f users.ldif
+
+6) Install phpLDAPadmin
+
+sudo apt install phpldapadmin
+
+7) Configure phpLDAPadmin
+
+sudo nano /etc/phpldapadmin/config.php
+
+Make the following changes:
+
+...
+$servers = new Datastore();
+$servers->newServer('ldap_pla');
+...
+$servers->setValue('server','host','<IP OF YOUR MACHINE>');
+$servers->setValue('server','base',array('dc=example,dc=com'));
+...
+
+8) Configure Apache for phpLDAPadmin
+
+sudo nano /etc/apache2/conf-available/phpldapadmin.conf
+
+Add the following lines:
+
+<Directory /usr/share/phpldapadmin/htdocs>
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Allow,Deny
+    Allow from all
+  </IfModule>
+</Directory>
+
+9) sudo a2enconf phpldapadmin
+
+10) sudo systemctl restart apache2
+
+11) Access phpLDAPadmin:
+
+->  https://localhost/phpldapadmin
+
+
+
+
+
+
+

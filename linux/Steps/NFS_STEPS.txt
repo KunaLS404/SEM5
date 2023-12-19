@@ -1,0 +1,18 @@
+---------------------------NFS------------------------------
+-------NFS_Server----------
+1) apt install nfs-kernel-server
+2) systemctl start nfs-kernel-server
+3) systemctl status nfs-kernel-server
+4) mkdir /home/user/nfsshare1
+5) nano /home/user/nfsshare1/hello.txt
+6) nano /etc/exports:
+	path of folder of server <client-IP>(rw,sync,subtree_check)
+7) exportfs -a
+8) systemctl restart nfs-kernel-server
+
+
+-------NFS_Client---------------
+1) apt install nfs-common
+2) mkdir home/user/nfs_pract
+3) mount <ipaddress>:/home/user/nfsshare1 nfs_pract
+

@@ -1,0 +1,15 @@
+sudo apt install openssh-server
+
+sudo nano /etc/hosts.allow:
+
+	sshd : ALL
+	ALL : ALL
+
+sudo systemctl enable sshd
+sudo systemctl start sshd
+
+For Windows 
+
+Open PowerShell -> 
+
+ssh {hostname}@{ip}

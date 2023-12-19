@@ -1,0 +1,23 @@
+apt install chrony
+
+
+#Open Configuration file ' /etc/chrony/chrony.conf '
+
+#Comment from " pool ntp.ubuntu.com "  to  " pool 2.ubuntu.pool.ntp.org iburst maxsources 2 "
+#Add Lines :-
+	server 0.in.pool.ntp.org iburst
+	server 1.in.pool.ntp.org iburst
+	server 2.in.pool.ntp.org iburst
+	server 3.in.pool.ntp.org iburst
+
+(At the end of the file add)
+
+allow 192.168.1.0/24	(Covers entire subnet of computers)
+
+
+
+systemctl restart chrony
+
+For Windows 
+Go to control panel -> clock and region -> date and time -> Internet Time -> Change settings {put ip of the linux machine ?...} -> Update now
+
